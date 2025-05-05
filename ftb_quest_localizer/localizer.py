@@ -46,7 +46,7 @@ def quest_extract(chapter_file, modpack_name, ftbquests_path):
     
     def get_string(text, part):
         """Extract strings from text"""
-        string_regex = re.compile(r'(?<=("))(?:(?=(\\?))\2.)*?(?=\1)')
+        string_regex = re.compile(r'(?<=")((?:\\.|[^"\\])*)(?=")')
         cleaned_text = text.replace(f"{part}: ", "").replace('""', "")
         return string_regex.findall(cleaned_text)
     
@@ -69,8 +69,11 @@ def quest_extract(chapter_file, modpack_name, ftbquests_path):
         for i, source_string in enumerate(source_strings):
             key = f"{modpack_name}.{chapter}.{part}{i}"
             
+            if isinstance(source_string, tuple):
+                source_string = source_string[0] if source_string else ""
+                
             # Skip if string matches image format
-            if not image_regex.match(source_string):
+            if source_string and not image_regex.match(source_string):
                 # Replace color codes
                 source_string_with_color = color_code_regex.sub(
                     lambda m: add_quotes(m), source_string)
