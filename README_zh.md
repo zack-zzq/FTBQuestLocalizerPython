@@ -1,5 +1,9 @@
 # FTB Quest Localizer
 
+[![PyPI version](https://img.shields.io/pypi/v/ftb-quest-localizer.svg)](https://pypi.org/project/ftb-quest-localizer/)
+[![Python Version](https://img.shields.io/pypi/pyversions/ftb-quest-localizer.svg)](https://pypi.org/project/ftb-quest-localizer/)
+[![License](https://img.shields.io/github/license/kressety/FTBQuestLocalizerPython)](LICENSE)
+
 [English](README.md) | 中文
 
 FTB Quest Localizer 是一个将 Minecraft 模组包中的任务字符串提取到 JSON 文件中以方便本地化的工具。

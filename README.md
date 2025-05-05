@@ -1,5 +1,9 @@
 # FTB Quest Localizer
 
+[![PyPI version](https://img.shields.io/pypi/v/ftb-quest-localizer.svg)](https://pypi.org/project/ftb-quest-localizer/)
+[![Python Version](https://img.shields.io/pypi/pyversions/ftb-quest-localizer.svg)](https://pypi.org/project/ftb-quest-localizer/)
+[![License](https://img.shields.io/github/license/kressety/FTBQuestLocalizerPython)](LICENSE)
+
 English | [中文](README_zh.md)
 
 FTB Quest Localizer is a tool for extracting quest strings from Minecraft modpacks into JSON files for easy localization.

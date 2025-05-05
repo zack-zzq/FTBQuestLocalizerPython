@@ -1,11 +1,20 @@
 from setuptools import setup, find_packages
 
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
 setup(
-    name="ftb_quest_localizer",
-    version="1.0.0",
+    name="ftb-quest-localizer",
+    version="1.0.1",
     description="FTB Quest Localization Helper",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Zack Zhu",
     license="MIT",
+    url="https://github.com/zack-zzq/FTBQuestLocalizerPython",
+    project_urls={
+        "Bug Tracker": "https://github.com/zack-zzq/FTBQuestLocalizerPython/issues",
+    },
     packages=find_packages(),
     install_requires=[
         "prompt_toolkit>=3.0.0",
