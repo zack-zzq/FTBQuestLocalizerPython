@@ -8,6 +8,11 @@ FTB Quest Localizer 是一个将 Minecraft 模组包中的任务字符串提取�
 
 ### 安装
 
+从Pypi安装:
+```
+pip install ftb-quest-localizer
+```
+
 从源码安装：
 ```
 git clone https://github.com/your-username/FTB-Quest-Localizer

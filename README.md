@@ -8,6 +8,11 @@ FTB Quest Localizer is a tool for extracting quest strings from Minecraft modpac
 
 ### Installation
 
+From Pypi:
+```
+pip install ftb-quest-localizer
+```
+
 From source:
 ```
 git clone https://github.com/your-username/FTB-Quest-Localizer
