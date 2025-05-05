@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="ftb-quest-localizer",
-    version="1.0.1",
+    version="1.0.2",
     description="FTB Quest Localization Helper",
     long_description=long_description,
     long_description_content_type="text/markdown",
