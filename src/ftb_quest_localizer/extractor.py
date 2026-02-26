@@ -152,6 +152,9 @@ def extract_quest_strings(
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    # Normalize modpack name for keys: lowercase, spaces -> underscores
+    key_prefix = re.sub(r"[^a-z0-9_]", "_", modpack_name.lower()).strip("_")
+
     chapters_dir = ftbquests_path / "chapters"
     if not chapters_dir.is_dir():
         raise FileNotFoundError(f"Chapters directory not found: {chapters_dir}")
@@ -160,6 +163,17 @@ def extract_quest_strings(
     results: dict[str, int] = {}
     chapters_output = output_dir / "chapters"
     chapters_output.mkdir(parents=True, exist_ok=True)
+
+    # Process data.snbt if present (has title field)
+    data_file = ftbquests_path / "data.snbt"
+    if data_file.exists():
+        try:
+            data_data = load_snbt(data_file)
+            _extract_from_dict(data_data, f"{key_prefix}.data", all_lang)
+            dump_snbt(data_data, output_dir / "data.snbt")
+            print("  -> Processed data.snbt")
+        except Exception as e:
+            print(f"Warning: Failed to process data.snbt: {e}")
 
     # Process chapter_groups if present
     chapter_groups_file = ftbquests_path / "chapter_groups.snbt"
@@ -170,7 +184,7 @@ def extract_quest_strings(
                 for i, group in enumerate(groups_data["chapter_groups"]):
                     if "title" in group:
                         prefix = (
-                            f"{modpack_name}.chapter_groups.title{i}"
+                            f"{key_prefix}.chapter_groups.title{i}"
                         )
                         all_lang[prefix] = group["title"]
                         group["title"] = "{" + prefix + "}"
@@ -190,7 +204,7 @@ def extract_quest_strings(
             try:
                 rt_data = load_snbt(reward_tables_dir / filename)
                 rt_name = filename.removesuffix(".snbt")
-                prefix = f"{modpack_name}.reward_tables.{rt_name}"
+                prefix = f"{key_prefix}.reward_tables.{rt_name}"
                 _extract_from_dict(rt_data, prefix, all_lang)
                 dump_snbt(rt_data, rt_output / filename)
             except Exception as e:
@@ -206,7 +220,7 @@ def extract_quest_strings(
             chapter_data = load_snbt(chapters_dir / filename)
             chapter_lang = OrderedDict()
 
-            _extract_from_chapter(chapter_data, chapter_name, modpack_name, chapter_lang)
+            _extract_from_chapter(chapter_data, chapter_name, key_prefix, chapter_lang)
 
             if chapter_lang:
                 all_lang.update(chapter_lang)
