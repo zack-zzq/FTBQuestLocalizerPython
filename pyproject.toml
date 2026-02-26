@@ -1,6 +1,6 @@
 [project]
 name = "ftb-quest-localizer"
-version = "2.0.4"
+version = "2.0.5"
 description = "FTB Quest Localization Tool - Extract and manage quest strings for easy localization"
 readme = "README.md"
 license = { text = "MIT" }
