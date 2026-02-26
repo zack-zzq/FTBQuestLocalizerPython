@@ -131,7 +131,44 @@ def _extract_hex_id(key: str) -> str | None:
     parts = key.split(".")
     if len(parts) >= 2:
         return parts[1]
-    return None
+def extract_single_file_lang(
+    snbt_file: str | Path,
+    output_dir: str | Path,
+    *,
+    flatten_single_lines: bool = False,
+) -> int:
+    """Extract a single SNBT lang file (e.g., lang/en_us.snbt) to a single JSON file.
+
+    This handles the variant where modpack creators export all FTB Quests strings
+    into a single SNBT file, rather than splitting by chapter.
+
+    Args:
+        snbt_file: Path to the .snbt lang file (e.g., ftbquests/quests/lang/en_us.snbt).
+        output_dir: Directory to write the resulting en_us.json to.
+        flatten_single_lines: If True, single-element lists won't get numeric suffixes.
+
+    Returns:
+        Number of entries extracted.
+    """
+    snbt_file = Path(snbt_file)
+    output_dir = Path(output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    if not snbt_file.is_file():
+        raise FileNotFoundError(f"SNBT lang file not found: {snbt_file}")
+
+    data = load_snbt(snbt_file)
+    flat = flatten_lang_data(data, flatten_single_lines=flatten_single_lines)
+
+    if not flat:
+        print(f"No lang entries found in {snbt_file.name}.")
+        return 0
+
+    output_file = output_dir / snbt_file.with_suffix(".json").name
+    _write_json(output_file, flat)
+
+    print(f"Extracted {len(flat)} entries from {snbt_file.name} to {output_file.name}.")
+    return len(flat)
 
 
 def split_lang_files(
