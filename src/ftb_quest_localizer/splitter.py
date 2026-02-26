@@ -158,38 +158,50 @@ def split_lang_files(
     output_dir.mkdir(parents=True, exist_ok=True)
 
     lang_dir = ftbquests_path / "lang" / "en_us"
+    lang_file = ftbquests_path / "lang" / "en_us.snbt"
     chapters_dir = ftbquests_path / "chapters"
 
-    if not lang_dir.is_dir():
+    if not lang_dir.is_dir() and not lang_file.is_file():
         raise FileNotFoundError(
-            f"Lang directory not found: {lang_dir}\n"
+            f"Lang directory/file not found at {ftbquests_path / 'lang'}\n"
             "This modpack may use the old format. Try 'extract' command instead."
         )
 
     # 1. Load all lang SNBT files and merge into a single dict
     all_lang_data = OrderedDict()
 
-    # Load top-level lang files
-    for snbt_file in sorted(lang_dir.glob("*.snbt")):
+    # Load single lang file if it exists
+    if lang_file.is_file():
         try:
-            data = load_snbt(snbt_file)
+            data = load_snbt(lang_file)
             flat = flatten_lang_data(data, flatten_single_lines=flatten_single_lines)
             all_lang_data.update(flat)
         except Exception as e:
-            print(f"Warning: Failed to parse {snbt_file.name}: {e}")
+            print(f"Warning: Failed to parse {lang_file.name}: {e}")
 
-    # Load chapter-specific lang files
-    chapters_lang_dir = lang_dir / "chapters"
-    if chapters_lang_dir.is_dir():
-        for snbt_file in sorted(chapters_lang_dir.glob("*.snbt")):
+    # Load from lang/en_us/ directory if it exists
+    if lang_dir.is_dir():
+        # Load top-level lang files
+        for snbt_file in sorted(lang_dir.glob("*.snbt")):
             try:
                 data = load_snbt(snbt_file)
-                flat = flatten_lang_data(
-                    data, flatten_single_lines=flatten_single_lines
-                )
+                flat = flatten_lang_data(data, flatten_single_lines=flatten_single_lines)
                 all_lang_data.update(flat)
             except Exception as e:
-                print(f"Warning: Failed to parse chapters/{snbt_file.name}: {e}")
+                print(f"Warning: Failed to parse {snbt_file.name}: {e}")
+
+        # Load chapter-specific lang files
+        chapters_lang_dir = lang_dir / "chapters"
+        if chapters_lang_dir.is_dir():
+            for snbt_file in sorted(chapters_lang_dir.glob("*.snbt")):
+                try:
+                    data = load_snbt(snbt_file)
+                    flat = flatten_lang_data(
+                        data, flatten_single_lines=flatten_single_lines
+                    )
+                    all_lang_data.update(flat)
+                except Exception as e:
+                    print(f"Warning: Failed to parse chapters/{snbt_file.name}: {e}")
 
     if not all_lang_data:
         print("No lang entries found.")
