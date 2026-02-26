@@ -123,11 +123,19 @@ def merge_json_to_lang_dir(
             top_level = _get_top_level_file(key)
             if top_level:
                 out_path = output_dir / top_level
-            elif chapter_name in TOP_LEVEL_FILE_STEMS:
-                # File is a known top-level category, write as top-level
-                out_path = output_dir / f"{chapter_name}.snbt"
             else:
-                out_path = output_dir / "chapters" / f"{chapter_name}.snbt"
+                # Extract chapter name from key prefix:
+                # Keys are like "ModpackName.chapter_name.rest"
+                # The 2nd segment is the chapter name
+                parts = key.split(".", 2)
+                if len(parts) >= 2:
+                    chapter = parts[1]
+                else:
+                    chapter = chapter_name  # fallback to filename-based
+                if chapter in TOP_LEVEL_FILE_STEMS:
+                    out_path = output_dir / f"{chapter}.snbt"
+                else:
+                    out_path = output_dir / "chapters" / f"{chapter}.snbt"
 
             if out_path not in output_buckets:
                 output_buckets[out_path] = OrderedDict()
